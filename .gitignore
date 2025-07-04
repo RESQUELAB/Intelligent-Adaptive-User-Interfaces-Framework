@@ -4,6 +4,7 @@
 /src/.env
 /src/.env.*
 
+/src/electron_app/
 
 # Python
 __pycache__/
