@@ -1,0 +1,79 @@
+version: '3.8'
+services:
+  django_app:
+    build:
+      context: ./django_app
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./rl-teacher-ui-adapt:/app
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - VIDEO_SERVER_HOST=${VIDEO_SERVER_HOST}
+    depends_on:
+      db:
+        condition: service_started
+
+  rlhf_server_1:
+    build:
+      context: ./rlhf_server_1
+      dockerfile: Dockerfile
+    ports:
+      - "9998:9998"
+    volumes:
+      - ./rl-teacher-ui-adapt:/app
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - VIDEO_SERVER_HOST=${VIDEO_SERVER_HOST}
+
+  rlhf_server_2:
+    build:
+      context: ./rlhf_server_2
+      dockerfile: Dockerfile
+    ports:
+      - "9997:9997"
+    volumes:
+      - ./rl-teacher-ui-adapt:/app
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - VIDEO_SERVER_HOST=${VIDEO_SERVER_HOST}
+
+  video_server:
+    build:
+      context: ./video_server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - VIDEO_STORAGE_DIR=/videos
+    volumes:
+      - ./rl-teacher-ui-adapt/human-feedback-api/video_server:/app
+      - ./videos:/videos
+
+  db:
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - VIDEO_SERVER_HOST=${VIDEO_SERVER_HOST}
+
+volumes:
+  postgres_data:
