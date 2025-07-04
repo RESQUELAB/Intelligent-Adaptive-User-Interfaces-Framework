@@ -1,0 +1,53 @@
+# Environment files
+.env
+.env.*
+/src/.env
+/src/.env.*
+
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+.Python
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+*.log
+
+# Node/Electron
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+electron_app/resources/app/logs/
+electron_app/.env
+
+# Logs and outputs
+/logs/*
+*.log
+*.csv
+
+# Docker
+*.pid
+*.sock
+
+# VSCode
+.vscode/
+.history/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+# notified-users.json
+.idea/
+*.swp
+*.swo
+ 
