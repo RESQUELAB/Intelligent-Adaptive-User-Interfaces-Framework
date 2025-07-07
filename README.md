@@ -11,8 +11,6 @@ This repository orchestrates an adaptive user interface (UI) experimentation pla
 - **PostgreSQL Database**: Central data storage for experiments and user data.
 - **Dockerized Deployment**: All services are containerized for easy setup and reproducibility.
 
-## Quick Start
-
 
 ### Prerequisites
 
@@ -68,6 +66,23 @@ docker-compose up -d
 
 - **Experiment Configuration**: Modify or add RL environments and UI adaptation logic in `rl-teacher-ui-adapt/`.
 - **Email Notifications**: Configure email settings in `.env` for agent status notifications.
+
+
+## Client-Side Example
+
+A ready-to-use Windows client binary is available for demonstration and quick testing.  
+Download the latest release from [Adaptive-app v1.0.0](https://github.com/RESQUELAB/Adaptive-app/releases/tag/adaptive_app_v1.0.0).
+
+A batch file is included at `src/get_client.bat` to automatically download and extract the client into a `client_app` folder.  
+**Before running the app, configure the SERVER address in `client_app/resources/app/config.json`.**
+
++ `config.json` example:
+
+```json
+{
+  "TARGET_SERVER": "127.0.0.1"
+}
+```
 
 ## License
 
