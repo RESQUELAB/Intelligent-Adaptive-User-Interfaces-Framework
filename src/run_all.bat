@@ -35,30 +35,31 @@ if not exist "%EXE_PATH%" (
 echo Copying .env to Electron app folder...
 copy /Y .env electron_app\.env
 
+echo DONE!!
 
 echo Preparing Docker build folders...
 REM Django App
-if not exist django_app\source_code\manage.py (
+if not exist django_app\source_code\human-feedback-api\manage.py (
     echo Copying source code to django_app...
-    xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api django_app\source_code\
+    xcopy /E /I /Y rl-teacher-ui-adapt\ django_app\source_code\
 )
 
 REM RLHF Server 1
-if not exist rlhf_server_1\source_code\manage.py (
+if not exist rlhf_server_1\source_code\human-feedback-api\manage.py (
     echo Copying source code to rlhf_server_1...
-    xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api rlhf_server_1\source_code\
+    xcopy /E /I /Y rl-teacher-ui-adapt\ rlhf_server_1\source_code\
 )
 
 REM RLHF Server 2
-if not exist rlhf_server_2\source_code\manage.py (
+if not exist rlhf_server_2\source_code\human-feedback-api\manage.py (
     echo Copying source code to rlhf_server_2...
-    xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api rlhf_server_2\source_code\
+    xcopy /E /I /Y rl-teacher-ui-adapt\ rlhf_server_2\source_code\
 )
 
 REM Video Server
-if not exist video_server\source_code\video_entrypoint.py (
+if not exist video_server\source_code\app\run_server.py (
     echo Copying source code to video_server...
-    xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api\video_server video_server\source_code\
+    xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api\video_server video_server\app\
 )
 
 
