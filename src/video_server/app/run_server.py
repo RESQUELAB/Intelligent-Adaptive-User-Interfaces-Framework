@@ -27,7 +27,8 @@ def folder_path():
         tmp_folder = os.path.join('C:', 'tmp', 'rl_teacher_media')  # Assuming 'C:' is your system drive
         return folder
 
-folder = folder_path()
+# folder = folder_path()
+folder = os.environ.get("VIDEO_STORAGE_DIR", os.path.join(os.getcwd(), 'videos'))
 app = Flask(__name__, static_folder=folder, static_url_path='')
 
 @app.route('/')
