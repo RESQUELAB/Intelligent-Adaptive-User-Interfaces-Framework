@@ -1,4 +1,4 @@
-# RL_UI_Adapt_orchestrator
+# Intelligent Adaptive User Interfaces Framework
 
 This repository orchestrates an adaptive user interface (UI) experimentation platform using reinforcement learning (RL) and human feedback. It integrates a Django backend, RL teacher servers, a video server, and an Electron-based desktop client for experiment management and data collection.
 
