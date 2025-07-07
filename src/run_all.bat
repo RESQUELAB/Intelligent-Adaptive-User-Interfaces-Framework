@@ -35,6 +35,33 @@ if not exist "%EXE_PATH%" (
 echo Copying .env to Electron app folder...
 copy /Y .env electron_app\.env
 
+
+echo Preparing Docker build folders...
+REM Django App
+if not exist django_app\source_code\manage.py (
+    echo Copying source code to django_app...
+    xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api django_app\source_code\
+)
+
+REM RLHF Server 1
+if not exist rlhf_server_1\source_code\manage.py (
+    echo Copying source code to rlhf_server_1...
+    xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api rlhf_server_1\source_code\
+)
+
+REM RLHF Server 2
+if not exist rlhf_server_2\source_code\manage.py (
+    echo Copying source code to rlhf_server_2...
+    xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api rlhf_server_2\source_code\
+)
+
+REM Video Server
+if not exist video_server\source_code\video_entrypoint.py (
+    echo Copying source code to video_server...
+    xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api\video_server video_server\source_code\
+)
+
+
 echo Building docker image...
 docker-compose build
 echo Launching backend services...
