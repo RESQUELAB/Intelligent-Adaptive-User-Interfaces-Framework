@@ -1,10 +1,11 @@
 # Environment files
 .env
-.env.*
+.env.
 /src/.env
-/src/.env.*
+/src/.env.
 
 /src/electron_app/
+/src/client_app/
 /src/*/source_code
 
 # Python
