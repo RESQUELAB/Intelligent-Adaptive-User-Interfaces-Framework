@@ -1,0 +1,15 @@
+.vscode
+*.pyc
+*\logs\*
+*\models\*
+*.pickle
+
+*checkpoint
+*.data*
+*.index
+
+*__pycache__
+*.eeg-info
+
+.venv/
+*.csv
