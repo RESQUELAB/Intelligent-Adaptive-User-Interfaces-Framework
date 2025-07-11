@@ -24,14 +24,19 @@ echo Updating config.json with VIDEO_SERVER_HOST from .env...
 powershell -NoProfile -Command ^
   "$envPath = '.env';" ^
   "$envMap = @{};" ^
-  "Get-Content $envPath | ForEach-Object {" ^
-  "  if ($_ -match '^\s*([^#][^=]+?)\s*=\s*(.+)$') {" ^
+  "foreach ($line in Get-Content $envPath) {" ^
+  "  if ($line -match '^\s*([^#][^=]+?)\s*=\s*(.+)$') {" ^
   "    $key = $matches[1].Trim(); $val = $matches[2].Trim(); $envMap[$key] = $val" ^
   "  }" ^
   "};" ^
   "$target = $envMap['VIDEO_SERVER_HOST'];" ^
   "if (-not $target) { Write-Host '[ERROR] VIDEO_SERVER_HOST not found in .env'; exit 1 }" ^
   "$configPath = 'client_app\\resources\\app\\config.json';" ^
+  "# Remove UTF-8 BOM if present" ^
+  "$bytes = Get-Content $configPath -Encoding Byte;" ^
+  "if ($bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {" ^
+  "  [IO.File]::WriteAllBytes($configPath, $bytes[3..($bytes.Length-1)])" ^
+  "}" ^
   "$json = Get-Content $configPath -Raw | ConvertFrom-Json;" ^
   "$json.TARGET_SERVER = $target;" ^
   "$json | ConvertTo-Json -Depth 10 | Set-Content $configPath -Encoding UTF8;" ^
