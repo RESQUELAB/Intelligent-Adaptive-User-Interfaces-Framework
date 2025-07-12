@@ -215,9 +215,13 @@ def main(env=None, user_id=None, args=None):
     # Create .ready flag after training
     ready_path = os.path.join("checkpoints", "agent", experiment_name, str(user_id_arg),"courses", ".ready")
     # os.makedirs(os.path.dirname(ready_path), exist_ok=True)
+
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(ready_path), exist_ok=True)
     with open(ready_path, "w") as f:
         f.write("done")
     ready_path = os.path.join("checkpoints", "agent", experiment_name, str(user_id_arg),"trips", ".ready")
+    os.makedirs(os.path.dirname(ready_path), exist_ok=True)
     with open(ready_path, "w") as f:
         f.write("done")
 

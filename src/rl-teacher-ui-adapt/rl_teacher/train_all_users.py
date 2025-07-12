@@ -7,15 +7,16 @@ import concurrent.futures
 import psutil
 import time
 import random
+import os
 
 def get_user_data(experiment_name=""):
     try:
         conn = psycopg2.connect(
-            dbname='uiadapt', 
-            user='postgres', 
-            password='dani', 
-            host='127.0.0.1', 
-            port='5432'
+            dbname=os.getenv('POSTGRES_DB'),
+            user=os.getenv('POSTGRES_USER'),
+            password=os.getenv('POSTGRES_PASSWORD'),
+            host=os.getenv('POSTGRES_HOST'),
+            port=os.getenv('POSTGRES_PORT')
         )
         cursor = conn.cursor()
 
@@ -54,8 +55,10 @@ def run_script(user_id, domains_to_train, experiment_name="test"):
     for domain in domains_to_train:
         command = [
             "python", "rl_teacher/teach.py", "-e", "UIAdaptation-v0", "-n", experiment_name, "-p", "human", "-L", "10", 
-            "-w", "1", "-tep", "100000", "-d", domain, "-c", "4", "-V", "-u", str(user_id), "-i", "1000000"
-        ]
+              "-w", "1", "-tep", "100000", "-d", domain, "-c", "4", "-V", "-u", str(user_id), "-i", "1000000", "--force_new_reward_model", "--force_new_agent_model"        ]
+
+            # "-w", "1", "-tep", "100000", "-d", domain, "-c", "4", "-V", "-u", str(user_id), "-i", "1000000"
+
         commands.append((user_id, domain, command))
     return commands
 
@@ -143,17 +146,10 @@ if __name__ == "__main__":
     all_commands = []
     print(user_group_map)
     for user_id, domains_completed in completed_training.items():
-        group = user_group_map.get(user_id)
-
-        if not group:
+        if not domains_completed:
+            print(f"[SKIP] User {user_id} – no completed domains.")
             continue
-        valid_domains = GROUP_DOMAINS.get(str(group), set())
-        filtered_domains = domains_completed & valid_domains  # Only use allowed domains
-
-        if not filtered_domains:
-            print(f"[SKIP] User {user_id} in {group} – no valid domains to train.")
-            continue
-        all_commands.extend(run_script(user_id, filtered_domains, experiment_name=experiment_name))
+        all_commands.extend(run_script(user_id, domains_completed, experiment_name=experiment_name))
 
     # Limit number of concurrent training processes
     max_workers = 7

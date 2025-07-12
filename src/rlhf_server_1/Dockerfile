@@ -16,6 +16,7 @@ RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted
 RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --no-cache-dir -e ui_adapt
 RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --no-cache-dir django==1.11
 RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --no-cache-dir websocket-client==1.3.1 websocket-server==0.6.4
+RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --no-cache-dir psutil
 
 EXPOSE 9998
 
