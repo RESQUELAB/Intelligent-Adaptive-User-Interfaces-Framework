@@ -1,12 +1,16 @@
 # Environment files
 .env
 .env.
-/src/.env
-/src/.env.
+/core-environment/.env
+/core-environment/.env.
 
-/src/electron_app/
-/src/client_app/
-/src/*/source_code
+/core-environment/electron_app/
+/core-environment/client_app/
+/core-environment/*/source_code
+
+/core-environment/orchestrator-client/
+/examples/client_app/
+/*.zip
 
 # Python
 __pycache__/
@@ -54,3 +58,8 @@ Thumbs.db
 *.swp
 *.swo
  
+# Ignorar descargas pesadas y ejecutables
+*.exe
+*.zip
+core-environment/electron_app/
+examples/client_app/
