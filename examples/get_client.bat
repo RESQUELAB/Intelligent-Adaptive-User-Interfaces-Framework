@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set ZIP_URL=https://github.com/RESQUELAB/Adaptive-app/releases/download/adaptive_app_v1.0.0/adaptiveapp-v1.0.0.zip
+set ZIP_URL=https://github.com/RESQUELAB/Adaptive-app/releases/download/adaptive_app_v1.0.0/adaptiveapp-v1.0.1.zip
 set ZIP_FILE=client_app.zip
 
 echo Downloading Adaptive App client...
