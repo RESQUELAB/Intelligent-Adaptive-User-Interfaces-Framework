@@ -1,5 +1,10 @@
 @echo off
 
+if not exist ".env" (
+    echo Creating .env from .env.example...
+    copy /Y .env.example .env
+)
+
 call set_ip_env.bat
 
 echo Paths and download info
