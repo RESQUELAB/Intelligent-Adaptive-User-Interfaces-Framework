@@ -143,7 +143,7 @@ class TrainingCompletion(models.Model):
 class Profile(models.Model):
     ''' This class extends the user model information '''
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    group = models.IntegerField()
+    group = models.IntegerField(default=0)
     experiment = models.TextField(max_length=200, blank = True)
     birth = models.TextField(max_length=200, blank = True)
     gender = models.TextField(max_length=200, blank = True)

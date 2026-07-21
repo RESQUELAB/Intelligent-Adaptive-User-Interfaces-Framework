@@ -249,6 +249,8 @@ users = {}
 
 # Called for every client disconnecting
 def client_left(client, server):
+    if client is None:
+        return
     print("Client(%d) disconnected" % client['id'])
 
 # Called when a client sends a message
