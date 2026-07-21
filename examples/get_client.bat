@@ -16,7 +16,7 @@ if %errorlevel% neq 0 (
     pause
     exit /b
 )
-ren adaptiveapp-v1.0.0 client_app
+ren adaptiveapp-v1.0.1 client_app
 del /f /q %ZIP_FILE%
 
 :: --- Modify config.json with value from .env ---
