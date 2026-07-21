@@ -39,6 +39,7 @@ electron_app/.env
 /logs/*
 *.log
 *.csv
+!**/clips.csv
 
 # Docker
 *.pid
