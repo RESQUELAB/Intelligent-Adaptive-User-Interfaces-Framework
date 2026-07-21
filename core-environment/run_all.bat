@@ -1,79 +1,137 @@
 @echo off
+setlocal enabledelayedexpansion
 
+REM ============================================
+REM  RL4UI - Setup Completo
+REM ============================================
+
+REM --- 1. Crear .env desde .env.example si no existe ---
 if not exist ".env" (
-    echo Creating .env from .env.example...
+    echo [1/7] Creating .env from .env.example...
     copy /Y .env.example .env
+) else (
+    echo [1/7] .env already exists
 )
 
+REM --- 2. Auto-detectar IP y anadir VIDEO_SERVER_HOST ---
 call set_ip_env.bat
 
-echo Paths and download info
+REM --- 3. Descargar Orchestrator (Electron) ---
+echo.
+echo [3/7] Checking Orchestrator...
 set "ZIP_PATH=.\orchestrator.zip"
 set "EXE_PATH=electron_app\adaptiveuiserver.exe"
-set "DOWNLOAD_URL=https://github.com/RESQUELAB/UIAdaptationManager/releases/download/adaptiveappserver-v1.0.0/orchestrator.zip"
+set "ORCH_URL=https://github.com/RESQUELAB/UIAdaptationManager/releases/download/adaptiveappserver-v1.0.0/orchestrator.zip"
 
-echo Create electron_app folder if it doesn't exist
-if not exist "electron_app" (
-    mkdir electron_app
-)
+if not exist "electron_app" mkdir electron_app
 
-echo Check if executable exists, download and extract if not
 if not exist "%EXE_PATH%" (
-    echo [INFO] Executable not found. Downloading orchestrator.zip...
-    curl -L -o "%ZIP_PATH%" "%DOWNLOAD_URL%"
+    echo   Downloading orchestrator.zip...
+    curl -L -o "%ZIP_PATH%" "%ORCH_URL%"
     if %errorlevel% neq 0 (
-        echo [ERROR] Failed to download orchestrator.zip
+        echo [ERROR] Failed to download orchestrator
         pause
         exit /b
     )
-    echo [INFO] Extracting orchestrator.zip...
+    echo   Extracting...
     powershell -Command "Expand-Archive -Path '%ZIP_PATH%' -DestinationPath '.' -Force"
-    if %errorlevel% neq 0 (
-        echo [ERROR] Failed to extract orchestrator.zip
-        pause
-        exit /b
-    )
     del "%ZIP_PATH%"
-    echo [INFO] Extraction complete.
+    echo   Done.
+) else (
+    echo   Already downloaded.
 )
 
-echo Copying .env to Electron app folder...
+REM --- 4. Copiar .env al Orchestrator ---
 copy /Y .env electron_app\.env
 
-echo DONE!!
+REM --- 5. Descargar Client App ---
+echo.
+echo [5/7] Checking Client App...
+set "CLIENT_ZIP=..\examples\client_app.zip"
+set "CLIENT_DIR=..\examples\client_app"
+set "CLIENT_URL=https://github.com/RESQUELAB/Adaptive-app/releases/download/adaptive_app_v1.0.1/adaptiveapp-v1.0.1.zip"
 
+if not exist "%CLIENT_DIR%" (
+    echo   Downloading client app...
+    curl -L -o "%CLIENT_ZIP%" "%CLIENT_URL%"
+    if %errorlevel% neq 0 (
+        echo [ERROR] Failed to download client app
+        pause
+        exit /b
+    )
+    echo   Extracting...
+    powershell -Command "Expand-Archive -Path '%CLIENT_ZIP%' -DestinationPath '..\examples' -Force"
+    powershell -Command "if (Test-Path '..\examples\adaptiveapp-v1.0.1') { Rename-Item '..\examples\adaptiveapp-v1.0.1' 'client_app' }"
+    del /f /q "%CLIENT_ZIP%"
+    echo   Done.
+) else (
+    echo   Already downloaded.
+)
+
+REM --- 6. Configurar client config.json con VIDEO_SERVER_HOST ---
+echo.
+echo [6/7] Configuring client app...
+for /f "tokens=1,* delims==" %%A in ('findstr "VIDEO_SERVER_HOST=" .env') do set "VSH=%%B"
+echo   VIDEO_SERVER_HOST=!VSH!
+powershell -NoProfile -Command ^
+  "$cfg = '%CLIENT_DIR%\resources\app\config.json';" ^
+  "$json = Get-Content $cfg -Raw | ConvertFrom-Json;" ^
+  "$json.TARGET_SERVER = '!VSH!';" ^
+  "$json | ConvertTo-Json -Depth 10 | Set-Content $cfg -Encoding UTF8;" ^
+  "Write-Host '  Configured TARGET_SERVER = !VSH!'"
+
+REM --- 7. Docker: build y levantar servicios ---
+echo.
+echo [7/7] Building and starting Docker services...
 echo Preparing Docker build folders...
+
 REM Django App
 if not exist django_app\source_code\human-feedback-api\manage.py (
-    echo Copying source code to django_app...
+    echo   Copying source code to django_app...
     xcopy /E /I /Y rl-teacher-ui-adapt\ django_app\source_code\
 )
 
 REM RLHF Server 1
 if not exist rlhf_server_1\source_code\human-feedback-api\manage.py (
-    echo Copying source code to rlhf_server_1...
+    echo   Copying source code to rlhf_server_1...
     xcopy /E /I /Y rl-teacher-ui-adapt\ rlhf_server_1\source_code\
 )
 
 REM RLHF Server 2
 if not exist rlhf_server_2\source_code\human-feedback-api\manage.py (
-    echo Copying source code to rlhf_server_2...
+    echo   Copying source code to rlhf_server_2...
     xcopy /E /I /Y rl-teacher-ui-adapt\ rlhf_server_2\source_code\
 )
 
 REM Video Server
 if not exist video_server\source_code\app\run_server.py (
-    echo Copying source code to video_server...
+    echo   Copying source code to video_server...
     xcopy /E /I /Y rl-teacher-ui-adapt\human-feedback-api\video_server video_server\app\
 )
 
-echo Building docker image...
+echo   Building docker images...
 docker-compose build
-echo Launching backend services...
+echo   Launching services...
 docker-compose up -d
 
+echo.
 echo Waiting for services to be ready...
-timeout /t 5
+timeout /t 10
 
-echo Starting Orchestrator (Electron app)...
+echo.
+echo Starting Orchestrator...
 start "" "electron_app\adaptiveuiserver.exe"
+
+echo.
+echo ============================================
+echo  RL4UI Setup Complete!
+echo ============================================
+echo  Django:        http://localhost:8000
+echo  Video Server:  http://localhost:5000
+echo  RLHF Server 1: ws://localhost:9998
+echo  RLHF Server 2: ws://localhost:9997
+echo  Orchestrator:  Running
+echo  Client App:    ..\examples\client_app\adaptiveapp.exe
+echo ============================================
+
+endlocal
