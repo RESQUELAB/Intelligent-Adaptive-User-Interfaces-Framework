@@ -32,8 +32,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "if ($envFile -match 'VIDEO_SERVER_HOST=(.+)') {" ^
   "  $ip = $matches[1].Trim();" ^
   "  Write-Host \"  Server IP: $ip\";" ^
-  "  $json = @{ TARGET_SERVER = $ip } | ConvertTo-Json;" ^
-  "  Set-Content -Path 'client_app\resources\app\config.json' -Value $json -Encoding UTF8;" ^
+  "  $json = '{\"TARGET_SERVER\":\"' + $ip + '\"}';" ^
+  "  [System.IO.File]::WriteAllText((Resolve-Path 'client_app\resources\app\config.json').Path, $json);" ^
   "  Write-Host '  config.json written successfully'" ^
   "} else {" ^
   "  Write-Host '  [ERROR] VIDEO_SERVER_HOST not found in .env'; exit 1" ^
