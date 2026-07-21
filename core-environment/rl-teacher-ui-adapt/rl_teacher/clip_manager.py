@@ -14,7 +14,10 @@ from django.db.models import Max
 def _write_and_upload_video(clip_data, frames, clip_id, source, fps, gcs_path, video_local_path, clip_local_path, actions=""):
     with open(clip_local_path, 'wb') as f:
         pickle.dump(clip_data, f)  # Write clip to disk
-    write_segment_to_video(frames, fname=video_local_path, fps=fps)
+    try:
+        write_segment_to_video(frames, fname=video_local_path, fps=fps)
+    except Exception as e:
+        print("Warning: Could not write video for clip %s: %s" % (clip_id, e))
     # upload_to_gcs(video_local_path, gcs_path)
     return clip_id, source, actions
 

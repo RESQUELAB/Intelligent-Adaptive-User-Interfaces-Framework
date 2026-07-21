@@ -150,19 +150,27 @@ class TextEnvViewer(TransparentWrapper):
                 human_obs = ob
             info["human_obs"] = human_obs
         elif "human_obs" in info and self.flip:
-            image_data = info["human_obs"]
-            is_base64, mime_type = is_base64_image(image_data)
-            if is_base64:
-                # print(f"The image is base64-encoded and its MIME type is {mime_type}.")
-                new_image = Image.open(io.BytesIO(base64.b64decode(image_data.split(',')[1])))
-                new_image.save("image.png")
-            else:
-                # print("The image is not base64-encoded.")
-                # Convert the NumPy array to a PIL Image object
-                new_image = Image.fromarray(np.array(json.loads(image_data["image"]), dtype='uint8'))
-            
-            new_image = np.flip(new_image, 0)
-            info["human_obs"] = new_image
+            try:
+                image_data = info["human_obs"]
+                if isinstance(image_data, np.ndarray) and image_data.ndim >= 2:
+                    info["human_obs"] = np.flip(image_data, 0)
+                elif isinstance(image_data, str):
+                    is_base64, mime_type = is_base64_image(image_data)
+                    if is_base64:
+                        new_image = Image.open(io.BytesIO(base64.b64decode(image_data.split(',')[1])))
+                        new_image.save("image.png")
+                    else:
+                        new_image = Image.fromarray(np.array(json.loads(image_data["image"]), dtype='uint8'))
+                    new_image = np.flip(new_image, 0)
+                    info["human_obs"] = new_image
+                elif isinstance(image_data, dict) and "image" in image_data:
+                    new_image = Image.fromarray(np.array(json.loads(image_data["image"]), dtype='uint8'))
+                    new_image = np.flip(new_image, 0)
+                    info["human_obs"] = new_image
+                else:
+                    info["human_obs"] = np.flip(ob, axis=0)
+            except Exception:
+                info["human_obs"] = np.flip(ob, axis=0)
         return ob, reward, done, info
 
 class CompressedTextViewer(TransparentWrapper):

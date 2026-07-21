@@ -33,13 +33,22 @@ def export_video(frames, fname, fps=10):
     for frame in frames:
         if isinstance(frame, tuple):
             frames_resized.append(frame)  # Raw image frames, no need to resize
+        elif isinstance(frame, np.ndarray) and frame.ndim >= 2:
+            w, h = frame.shape[:2]
+            w = w - (w % 2)  # Make width divisible by 2
+            h = h - (h % 2)  # Make height divisible by 2
+            frame_resized = frame[:w, :h]
+            frames_resized.append(frame_resized)
         else:
-            if isinstance(frame, np.ndarray):
-                w, h = frame.shape[:2]
-                w = w - (w % 2)  # Make width divisible by 2
-                h = h - (h % 2)  # Make height divisible by 2
-                frame_resized = frame[:w, :h]
-                frames_resized.append(frame_resized)
+            # Non-image frame (e.g. 1D discrete state vector from UIAdaptation env).
+            # Generate a blank placeholder frame so the video can still be created.
+            placeholder = np.zeros((84, 84), dtype=np.float32)
+            w, h = 84, 84
+            frames_resized.append(placeholder)
+
+    if not frames_resized:
+        print("No valid frames to encode, skipping video export.")
+        return
 
     '''
         MAKE SURE IF THE FRAME IS IN A VIDEO FORMAT OR IN UI DESIGN FORMAT.
@@ -49,7 +58,7 @@ def export_video(frames, fname, fps=10):
     raw_image = isinstance(frames_resized[0], tuple)
     shape = frames_resized[0][0] if raw_image else frames_resized[0].shape
     greyscale = (len(shape) == 2)
-    if greyscale: 
+    if greyscale:
         shape = shape + (3,)
     encoder = ImageEncoder(fname, shape, fps)
     for frame in frames_resized:
@@ -63,7 +72,7 @@ def export_video(frames, fname, fps=10):
             else:
                 if frame.shape[-1] == 4:  # BGRA to RGBA
                     frame = frame[..., [2, 1, 0, 3]]  # Swap B and R channels, keep G and A
-                    
+
             encoder.capture_frame(frame)
     encoder.close()
 
