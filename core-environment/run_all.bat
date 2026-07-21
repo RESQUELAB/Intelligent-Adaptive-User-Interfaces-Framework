@@ -7,18 +7,19 @@ REM ============================================
 
 REM --- 1. Crear .env desde .env.example si no existe ---
 if not exist ".env" (
-    echo [1/7] Creating .env from .env.example...
+    echo [1/6] Creating .env from .env.example...
     copy /Y .env.example .env
 ) else (
-    echo [1/7] .env already exists
+    echo [1/6] .env already exists
 )
 
 REM --- 2. Auto-detectar IP y anadir VIDEO_SERVER_HOST ---
+echo [2/6] Detecting server IP...
 call set_ip_env.bat
 
 REM --- 3. Descargar Orchestrator (Electron) ---
 echo.
-echo [3/7] Checking Orchestrator...
+echo [3/6] Checking Orchestrator...
 set "ZIP_PATH=.\orchestrator.zip"
 set "EXE_PATH=electron_app\adaptiveuiserver.exe"
 set "ORCH_URL=https://github.com/RESQUELAB/UIAdaptationManager/releases/download/adaptiveappserver-v1.0.0/orchestrator.zip"
@@ -46,7 +47,7 @@ copy /Y .env electron_app\.env
 
 REM --- 5. Descargar Client App ---
 echo.
-echo [5/7] Checking Client App...
+echo [4/6] Checking Client App...
 set "CLIENT_ZIP=..\examples\client_app.zip"
 set "CLIENT_DIR=..\examples\client_app"
 set "CLIENT_URL=https://github.com/RESQUELAB/Adaptive-app/releases/download/adaptive_app_v1.0.1/adaptiveapp-v1.0.1.zip"
@@ -70,19 +71,20 @@ if not exist "%CLIENT_DIR%" (
 
 REM --- 6. Configurar client config.json con VIDEO_SERVER_HOST ---
 echo.
-echo [6/7] Configuring client app...
+echo [5/6] Configuring client app...
+set "VSH="
 for /f "tokens=1,* delims==" %%A in ('findstr "VIDEO_SERVER_HOST=" .env') do set "VSH=%%B"
-echo   VIDEO_SERVER_HOST=!VSH!
-powershell -NoProfile -Command ^
-  "$cfg = '%CLIENT_DIR%\resources\app\config.json';" ^
-  "$json = Get-Content $cfg -Raw | ConvertFrom-Json;" ^
-  "$json.TARGET_SERVER = '!VSH!';" ^
-  "$json | ConvertTo-Json -Depth 10 | Set-Content $cfg -Encoding UTF8;" ^
-  "Write-Host '  Configured TARGET_SERVER = !VSH!'"
+if not defined VSH (
+    echo [WARNING] VIDEO_SERVER_HOST not found, client may not find videos
+) else (
+    echo   TARGET_SERVER = !VSH!
+    echo {"TARGET_SERVER":"!VSH!"} > "%CLIENT_DIR%\resources\app\config.json"
+    echo   config.json updated.
+)
 
 REM --- 7. Docker: build y levantar servicios ---
 echo.
-echo [7/7] Building and starting Docker services...
+echo [6/6] Building and starting Docker services...
 echo Preparing Docker build folders...
 
 REM Django App
