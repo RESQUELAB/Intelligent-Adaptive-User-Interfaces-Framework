@@ -7,19 +7,19 @@ REM ============================================
 
 REM --- 1. Crear .env desde .env.example si no existe ---
 if not exist ".env" (
-    echo [1/6] Creating .env from .env.example...
+    echo [1/5] Creating .env from .env.example...
     copy /Y .env.example .env
 ) else (
-    echo [1/6] .env already exists
+    echo [1/5] .env already exists
 )
 
 REM --- 2. Auto-detectar IP y anadir VIDEO_SERVER_HOST ---
-echo [2/6] Detecting server IP...
+echo [2/5] Detecting server IP...
 call set_ip_env.bat
 
 REM --- 3. Descargar Orchestrator (Electron) ---
 echo.
-echo [3/6] Checking Orchestrator...
+echo [3/5] Checking Orchestrator...
 set "ZIP_PATH=.\orchestrator.zip"
 set "EXE_PATH=electron_app\adaptiveuiserver.exe"
 set "ORCH_URL=https://github.com/RESQUELAB/UIAdaptationManager/releases/download/adaptiveappserver-v1.0.0/orchestrator.zip"
@@ -45,46 +45,9 @@ if not exist "%EXE_PATH%" (
 REM --- 4. Copiar .env al Orchestrator ---
 copy /Y .env electron_app\.env
 
-REM --- 5. Descargar Client App ---
+REM --- 5. Docker: build y levantar servicios ---
 echo.
-echo [4/6] Checking Client App...
-set "CLIENT_ZIP=..\examples\client_app.zip"
-set "CLIENT_DIR=..\examples\client_app"
-set "CLIENT_URL=https://github.com/RESQUELAB/Adaptive-app/releases/download/adaptive_app_v1.0.1/adaptiveapp-v1.0.1.zip"
-
-if not exist "%CLIENT_DIR%" (
-    echo   Downloading client app...
-    curl -L -o "%CLIENT_ZIP%" "%CLIENT_URL%"
-    if %errorlevel% neq 0 (
-        echo [ERROR] Failed to download client app
-        pause
-        exit /b
-    )
-    echo   Extracting...
-    powershell -Command "Expand-Archive -Path '%CLIENT_ZIP%' -DestinationPath '..\examples' -Force"
-    powershell -Command "if (Test-Path '..\examples\adaptiveapp-v1.0.1') { Rename-Item '..\examples\adaptiveapp-v1.0.1' 'client_app' }"
-    del /f /q "%CLIENT_ZIP%"
-    echo   Done.
-) else (
-    echo   Already downloaded.
-)
-
-REM --- 6. Configurar client config.json con VIDEO_SERVER_HOST ---
-echo.
-echo [5/6] Configuring client app...
-set "VSH="
-for /f "tokens=1,* delims==" %%A in ('findstr "VIDEO_SERVER_HOST=" .env') do set "VSH=%%B"
-if not defined VSH (
-    echo [WARNING] VIDEO_SERVER_HOST not found, client may not find videos
-) else (
-    echo   TARGET_SERVER = !VSH!
-    echo {"TARGET_SERVER":"!VSH!"} > "%CLIENT_DIR%\resources\app\config.json"
-    echo   config.json updated.
-)
-
-REM --- 7. Docker: build y levantar servicios ---
-echo.
-echo [6/6] Building and starting Docker services...
+echo [5/5] Building and starting Docker services...
 echo Preparing Docker build folders...
 
 REM Django App
@@ -133,7 +96,10 @@ echo  Video Server:  http://localhost:5000
 echo  RLHF Server 1: ws://localhost:9998
 echo  RLHF Server 2: ws://localhost:9997
 echo  Orchestrator:  Running
-echo  Client App:    ..\examples\client_app\adaptiveapp.exe
+echo ============================================
+echo.
+echo  To setup the client app, run:
+echo    cd ..\examples ^&^& get_client.bat
 echo ============================================
 
 endlocal
