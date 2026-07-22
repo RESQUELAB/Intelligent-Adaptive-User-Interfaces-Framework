@@ -7,19 +7,19 @@ REM ============================================
 
 REM --- 1. Crear .env desde .env.example si no existe ---
 if not exist ".env" (
-    echo [1/5] Creating .env from .env.example...
+    echo [1/6] Creating .env from .env.example...
     copy /Y .env.example .env
 ) else (
-    echo [1/5] .env already exists
+    echo [1/6] .env already exists
 )
 
 REM --- 2. Auto-detectar IP y anadir VIDEO_SERVER_HOST ---
-echo [2/5] Detecting server IP...
+echo [2/6] Detecting server IP...
 call set_ip_env.bat
 
 REM --- 3. Descargar Orchestrator (Electron) ---
 echo.
-echo [3/5] Checking Orchestrator...
+echo [3/6] Checking Orchestrator...
 set "ZIP_PATH=.\orchestrator.zip"
 set "EXE_PATH=electron_app\adaptiveuiserver.exe"
 set "ORCH_URL=https://github.com/RESQUELAB/UIAdaptationManager/releases/download/adaptiveappserver-v1.0.0/orchestrator.zip"
@@ -42,12 +42,37 @@ if not exist "%EXE_PATH%" (
     echo   Already downloaded.
 )
 
-REM --- 4. Copiar .env al Orchestrator ---
+REM --- 4. Descargar clips pre-entrenados (pickle files) ---
+set "CLIPS_DIR=rl-teacher-ui-adapt\clips"
+set "CLIPS_ZIP=clips.zip"
+set "CLIPS_URL=https://github.com/RESQUELAB/Intelligent-Adaptive-User-Interfaces-Framework/releases/download/v1.0.0-clips/clips.zip"
+
+echo.
+echo [4/6] Checking pre-trained clips...
+if not exist "%CLIPS_DIR%" mkdir "%CLIPS_DIR%"
+
+if not exist "%CLIPS_DIR%\UIAdaptation-v0-courses-1.clip" (
+    echo   Downloading pre-trained clips (~468MB)...
+    curl -L -o "%CLIPS_ZIP%" "%CLIPS_URL%"
+    if !errorlevel! neq 0 (
+        echo [ERROR] Failed to download clips
+        pause
+        exit /b
+    )
+    echo   Extracting clips...
+    powershell -Command "Expand-Archive -Path '%CLIPS_ZIP%' -DestinationPath '%CLIPS_DIR%' -Force"
+    del "%CLIPS_ZIP%"
+    echo   Done. 40 clips ready.
+) else (
+    echo   Pre-trained clips already present.
+)
+
+REM --- 5. Copiar .env al Orchestrator ---
 copy /Y .env electron_app\.env
 
-REM --- 5. Docker: build y levantar servicios ---
+REM --- 6. Docker: build y levantar servicios ---
 echo.
-echo [5/5] Building and starting Docker services...
+echo [6/6] Building and starting Docker services...
 echo Preparing Docker build folders...
 
 REM Django App
