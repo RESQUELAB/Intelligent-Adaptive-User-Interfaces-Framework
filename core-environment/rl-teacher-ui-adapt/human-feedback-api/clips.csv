@@ -1,41 +1,41 @@
 created_at,updated_at,media_url,environment_id,clip_tracking_id,domain,source,actions
 2026-01-01T10:00:00,2026-01-01T10:00:00,http://158.42.185.67:5000/clip_creation-courses-1.mp4,UIAdaptation-v0,1,courses,initial,
-2026-01-01T10:15:00,2026-01-01T10:15:00,http://158.42.185.67:5000/clip_creation-courses-2.mp4,UIAdaptation-v0,2,courses,initial,display->grid3->font_size->default->menu_type->line
-2026-01-01T10:30:00,2026-01-01T10:30:00,http://158.42.185.67:5000/clip_creation-courses-3.mp4,UIAdaptation-v0,3,courses,initial,display->grid3->display->grid4->theme->dark->information->partial
-2026-01-01T10:45:00,2026-01-01T10:45:00,http://158.42.185.67:5000/clip_creation-courses-4.mp4,UIAdaptation-v0,4,courses,initial,display->list->theme->light->font_size->default
-2026-01-01T11:00:00,2026-01-01T11:00:00,http://158.42.185.67:5000/clip_creation-courses-5.mp4,UIAdaptation-v0,5,courses,initial,display->grid5->theme->light->theme->dark->font_size->big
-2026-01-01T11:15:00,2026-01-01T11:15:00,http://158.42.185.67:5000/clip_creation-courses-6.mp4,UIAdaptation-v0,6,courses,initial,information->show->information->partial->font_size->medium->menu_type->dropdown
-2026-01-01T11:30:00,2026-01-01T11:30:00,http://158.42.185.67:5000/clip_creation-courses-7.mp4,UIAdaptation-v0,7,courses,initial,display->grid5->menu_type->line
-2026-01-01T11:45:00,2026-01-01T11:45:00,http://158.42.185.67:5000/clip_creation-courses-8.mp4,UIAdaptation-v0,8,courses,initial,display->grid3->theme->dark->font_size->big
-2026-01-01T12:00:00,2026-01-01T12:00:00,http://158.42.185.67:5000/clip_creation-courses-9.mp4,UIAdaptation-v0,9,courses,initial,display->list->information->partial->information->hide
-2026-01-01T12:15:00,2026-01-01T12:15:00,http://158.42.185.67:5000/clip_creation-courses-10.mp4,UIAdaptation-v0,10,courses,initial,display->grid2->display->grid3->font_size->small
-2026-01-01T12:30:00,2026-01-01T12:30:00,http://158.42.185.67:5000/clip_creation-courses-11.mp4,UIAdaptation-v0,11,courses,initial,display->grid4->display->grid5->theme->light
-2026-01-01T12:45:00,2026-01-01T12:45:00,http://158.42.185.67:5000/clip_creation-courses-12.mp4,UIAdaptation-v0,12,courses,initial,display->grid4->information->show->information->partial->menu_type->line
-2026-01-01T13:00:00,2026-01-01T13:00:00,http://158.42.185.67:5000/clip_creation-courses-13.mp4,UIAdaptation-v0,13,courses,initial,display->list->theme->dark->information->hide
-2026-01-01T13:15:00,2026-01-01T13:15:00,http://158.42.185.67:5000/clip_creation-courses-14.mp4,UIAdaptation-v0,14,courses,initial,display->grid3->theme->light->information->partial->font_size->small
-2026-01-01T13:30:00,2026-01-01T13:30:00,http://158.42.185.67:5000/clip_creation-courses-15.mp4,UIAdaptation-v0,15,courses,initial,display->grid3->font_size->big
-2026-01-01T13:45:00,2026-01-01T13:45:00,http://158.42.185.67:5000/clip_creation-courses-16.mp4,UIAdaptation-v0,16,courses,initial,display->grid3->font_size->default->menu_type->line
-2026-01-01T14:00:00,2026-01-01T14:00:00,http://158.42.185.67:5000/clip_creation-courses-17.mp4,UIAdaptation-v0,17,courses,initial,display->grid3->display->grid4->theme->dark->information->partial
-2026-01-01T14:15:00,2026-01-01T14:15:00,http://158.42.185.67:5000/clip_creation-courses-18.mp4,UIAdaptation-v0,18,courses,initial,display->list->theme->light->font_size->default
-2026-01-01T14:30:00,2026-01-01T14:30:00,http://158.42.185.67:5000/clip_creation-courses-19.mp4,UIAdaptation-v0,19,courses,initial,display->grid5->theme->light->theme->dark->font_size->big
-2026-01-01T14:45:00,2026-01-01T14:45:00,http://158.42.185.67:5000/clip_creation-courses-20.mp4,UIAdaptation-v0,20,courses,initial,information->show->information->partial->font_size->medium->menu_type->dropdown
+2026-01-01T10:15:00,2026-01-01T10:15:00,http://158.42.185.67:5000/clip_creation-courses-2.mp4,UIAdaptation-v0,2,courses,initial,Change to grid3->Change to default->Change to line
+2026-01-01T10:30:00,2026-01-01T10:30:00,http://158.42.185.67:5000/clip_creation-courses-3.mp4,UIAdaptation-v0,3,courses,initial,Change to grid3->Change to grid4->Change to dark->Change to partial
+2026-01-01T10:45:00,2026-01-01T10:45:00,http://158.42.185.67:5000/clip_creation-courses-4.mp4,UIAdaptation-v0,4,courses,initial,Change to list->Change to light->Change to default
+2026-01-01T11:00:00,2026-01-01T11:00:00,http://158.42.185.67:5000/clip_creation-courses-5.mp4,UIAdaptation-v0,5,courses,initial,Change to grid5->Change to light->Change to dark->Change to big
+2026-01-01T11:15:00,2026-01-01T11:15:00,http://158.42.185.67:5000/clip_creation-courses-6.mp4,UIAdaptation-v0,6,courses,initial,Change to show->Change to partial->Change to medium->Change to dropdown
+2026-01-01T11:30:00,2026-01-01T11:30:00,http://158.42.185.67:5000/clip_creation-courses-7.mp4,UIAdaptation-v0,7,courses,initial,Change to grid5->Change to line
+2026-01-01T11:45:00,2026-01-01T11:45:00,http://158.42.185.67:5000/clip_creation-courses-8.mp4,UIAdaptation-v0,8,courses,initial,Change to grid3->Change to dark->Change to big
+2026-01-01T12:00:00,2026-01-01T12:00:00,http://158.42.185.67:5000/clip_creation-courses-9.mp4,UIAdaptation-v0,9,courses,initial,Change to list->Change to partial->Change to hide
+2026-01-01T12:15:00,2026-01-01T12:15:00,http://158.42.185.67:5000/clip_creation-courses-10.mp4,UIAdaptation-v0,10,courses,initial,Change to grid2->Change to grid3->Change to small
+2026-01-01T12:30:00,2026-01-01T12:30:00,http://158.42.185.67:5000/clip_creation-courses-11.mp4,UIAdaptation-v0,11,courses,initial,Change to grid4->Change to grid5->Change to light
+2026-01-01T12:45:00,2026-01-01T12:45:00,http://158.42.185.67:5000/clip_creation-courses-12.mp4,UIAdaptation-v0,12,courses,initial,Change to grid4->Change to show->Change to partial->Change to line
+2026-01-01T13:00:00,2026-01-01T13:00:00,http://158.42.185.67:5000/clip_creation-courses-13.mp4,UIAdaptation-v0,13,courses,initial,Change to list->Change to dark->Change to hide
+2026-01-01T13:15:00,2026-01-01T13:15:00,http://158.42.185.67:5000/clip_creation-courses-14.mp4,UIAdaptation-v0,14,courses,initial,Change to grid3->Change to light->Change to partial->Change to small
+2026-01-01T13:30:00,2026-01-01T13:30:00,http://158.42.185.67:5000/clip_creation-courses-15.mp4,UIAdaptation-v0,15,courses,initial,Change to grid3->Change to big
+2026-01-01T13:45:00,2026-01-01T13:45:00,http://158.42.185.67:5000/clip_creation-courses-16.mp4,UIAdaptation-v0,16,courses,initial,Change to grid3->Change to default->Change to line
+2026-01-01T14:00:00,2026-01-01T14:00:00,http://158.42.185.67:5000/clip_creation-courses-17.mp4,UIAdaptation-v0,17,courses,initial,Change to grid3->Change to grid4->Change to dark->Change to partial
+2026-01-01T14:15:00,2026-01-01T14:15:00,http://158.42.185.67:5000/clip_creation-courses-18.mp4,UIAdaptation-v0,18,courses,initial,Change to list->Change to light->Change to default
+2026-01-01T14:30:00,2026-01-01T14:30:00,http://158.42.185.67:5000/clip_creation-courses-19.mp4,UIAdaptation-v0,19,courses,initial,Change to grid5->Change to light->Change to dark->Change to big
+2026-01-01T14:45:00,2026-01-01T14:45:00,http://158.42.185.67:5000/clip_creation-courses-20.mp4,UIAdaptation-v0,20,courses,initial,Change to show->Change to partial->Change to medium->Change to dropdown
 2026-01-01T10:00:00,2026-01-01T10:00:00,http://158.42.185.67:5000/clip_creation-trips-1.mp4,UIAdaptation-v0,1,trips,initial,
-2026-01-01T10:15:00,2026-01-01T10:15:00,http://158.42.185.67:5000/clip_creation-trips-2.mp4,UIAdaptation-v0,2,trips,initial,display->grid3->font_size->default->menu_type->line
-2026-01-01T10:30:00,2026-01-01T10:30:00,http://158.42.185.67:5000/clip_creation-trips-3.mp4,UIAdaptation-v0,3,trips,initial,display->grid3->display->grid4->theme->dark->information->partial
-2026-01-01T10:45:00,2026-01-01T10:45:00,http://158.42.185.67:5000/clip_creation-trips-4.mp4,UIAdaptation-v0,4,trips,initial,display->list->theme->light->font_size->default
-2026-01-01T11:00:00,2026-01-01T11:00:00,http://158.42.185.67:5000/clip_creation-trips-5.mp4,UIAdaptation-v0,5,trips,initial,display->grid5->theme->light->theme->dark->font_size->big
-2026-01-01T11:15:00,2026-01-01T11:15:00,http://158.42.185.67:5000/clip_creation-trips-6.mp4,UIAdaptation-v0,6,trips,initial,information->show->information->partial->font_size->medium->menu_type->dropdown
-2026-01-01T11:30:00,2026-01-01T11:30:00,http://158.42.185.67:5000/clip_creation-trips-7.mp4,UIAdaptation-v0,7,trips,initial,display->grid5->menu_type->line
-2026-01-01T11:45:00,2026-01-01T11:45:00,http://158.42.185.67:5000/clip_creation-trips-8.mp4,UIAdaptation-v0,8,trips,initial,display->grid3->theme->dark->font_size->big
-2026-01-01T12:00:00,2026-01-01T12:00:00,http://158.42.185.67:5000/clip_creation-trips-9.mp4,UIAdaptation-v0,9,trips,initial,display->list->information->partial->information->hide
-2026-01-01T12:15:00,2026-01-01T12:15:00,http://158.42.185.67:5000/clip_creation-trips-10.mp4,UIAdaptation-v0,10,trips,initial,display->grid2->display->grid3->font_size->small
-2026-01-01T12:30:00,2026-01-01T12:30:00,http://158.42.185.67:5000/clip_creation-trips-11.mp4,UIAdaptation-v0,11,trips,initial,display->grid3->font_size->default->menu_type->line
-2026-01-01T12:45:00,2026-01-01T12:45:00,http://158.42.185.67:5000/clip_creation-trips-12.mp4,UIAdaptation-v0,12,trips,initial,display->grid3->display->grid4->theme->dark->information->partial
-2026-01-01T13:00:00,2026-01-01T13:00:00,http://158.42.185.67:5000/clip_creation-trips-13.mp4,UIAdaptation-v0,13,trips,initial,display->list->theme->light->font_size->default
-2026-01-01T13:15:00,2026-01-01T13:15:00,http://158.42.185.67:5000/clip_creation-trips-14.mp4,UIAdaptation-v0,14,trips,initial,display->grid5->theme->light->theme->dark->font_size->big
-2026-01-01T13:30:00,2026-01-01T13:30:00,http://158.42.185.67:5000/clip_creation-trips-15.mp4,UIAdaptation-v0,15,trips,initial,information->show->information->partial->font_size->medium->menu_type->dropdown
-2026-01-01T13:45:00,2026-01-01T13:45:00,http://158.42.185.67:5000/clip_creation-trips-16.mp4,UIAdaptation-v0,16,trips,initial,display->grid3->font_size->default->menu_type->line
-2026-01-01T14:00:00,2026-01-01T14:00:00,http://158.42.185.67:5000/clip_creation-trips-17.mp4,UIAdaptation-v0,17,trips,initial,display->grid3->display->grid4->theme->dark->information->partial
-2026-01-01T14:15:00,2026-01-01T14:15:00,http://158.42.185.67:5000/clip_creation-trips-18.mp4,UIAdaptation-v0,18,trips,initial,display->list->theme->light->font_size->default
-2026-01-01T14:30:00,2026-01-01T14:30:00,http://158.42.185.67:5000/clip_creation-trips-19.mp4,UIAdaptation-v0,19,trips,initial,display->grid5->theme->light->theme->dark->font_size->big
-2026-01-01T14:45:00,2026-01-01T14:45:00,http://158.42.185.67:5000/clip_creation-trips-20.mp4,UIAdaptation-v0,20,trips,initial,information->show->information->partial->font_size->medium->menu_type->dropdown
+2026-01-01T10:15:00,2026-01-01T10:15:00,http://158.42.185.67:5000/clip_creation-trips-2.mp4,UIAdaptation-v0,2,trips,initial,Change to grid3->Change to default->Change to line
+2026-01-01T10:30:00,2026-01-01T10:30:00,http://158.42.185.67:5000/clip_creation-trips-3.mp4,UIAdaptation-v0,3,trips,initial,Change to grid3->Change to grid4->Change to dark->Change to partial
+2026-01-01T10:45:00,2026-01-01T10:45:00,http://158.42.185.67:5000/clip_creation-trips-4.mp4,UIAdaptation-v0,4,trips,initial,Change to list->Change to light->Change to default
+2026-01-01T11:00:00,2026-01-01T11:00:00,http://158.42.185.67:5000/clip_creation-trips-5.mp4,UIAdaptation-v0,5,trips,initial,Change to grid5->Change to light->Change to dark->Change to big
+2026-01-01T11:15:00,2026-01-01T11:15:00,http://158.42.185.67:5000/clip_creation-trips-6.mp4,UIAdaptation-v0,6,trips,initial,Change to show->Change to partial->Change to medium->Change to dropdown
+2026-01-01T11:30:00,2026-01-01T11:30:00,http://158.42.185.67:5000/clip_creation-trips-7.mp4,UIAdaptation-v0,7,trips,initial,Change to grid5->Change to line
+2026-01-01T11:45:00,2026-01-01T11:45:00,http://158.42.185.67:5000/clip_creation-trips-8.mp4,UIAdaptation-v0,8,trips,initial,Change to grid3->Change to dark->Change to big
+2026-01-01T12:00:00,2026-01-01T12:00:00,http://158.42.185.67:5000/clip_creation-trips-9.mp4,UIAdaptation-v0,9,trips,initial,Change to list->Change to partial->Change to hide
+2026-01-01T12:15:00,2026-01-01T12:15:00,http://158.42.185.67:5000/clip_creation-trips-10.mp4,UIAdaptation-v0,10,trips,initial,Change to grid2->Change to grid3->Change to small
+2026-01-01T12:30:00,2026-01-01T12:30:00,http://158.42.185.67:5000/clip_creation-trips-11.mp4,UIAdaptation-v0,11,trips,initial,Change to grid3->Change to default->Change to line
+2026-01-01T12:45:00,2026-01-01T12:45:00,http://158.42.185.67:5000/clip_creation-trips-12.mp4,UIAdaptation-v0,12,trips,initial,Change to grid3->Change to grid4->Change to dark->Change to partial
+2026-01-01T13:00:00,2026-01-01T13:00:00,http://158.42.185.67:5000/clip_creation-trips-13.mp4,UIAdaptation-v0,13,trips,initial,Change to list->Change to light->Change to default
+2026-01-01T13:15:00,2026-01-01T13:15:00,http://158.42.185.67:5000/clip_creation-trips-14.mp4,UIAdaptation-v0,14,trips,initial,Change to grid5->Change to light->Change to dark->Change to big
+2026-01-01T13:30:00,2026-01-01T13:30:00,http://158.42.185.67:5000/clip_creation-trips-15.mp4,UIAdaptation-v0,15,trips,initial,Change to show->Change to partial->Change to medium->Change to dropdown
+2026-01-01T13:45:00,2026-01-01T13:45:00,http://158.42.185.67:5000/clip_creation-trips-16.mp4,UIAdaptation-v0,16,trips,initial,Change to grid3->Change to default->Change to line
+2026-01-01T14:00:00,2026-01-01T14:00:00,http://158.42.185.67:5000/clip_creation-trips-17.mp4,UIAdaptation-v0,17,trips,initial,Change to grid3->Change to grid4->Change to dark->Change to partial
+2026-01-01T14:15:00,2026-01-01T14:15:00,http://158.42.185.67:5000/clip_creation-trips-18.mp4,UIAdaptation-v0,18,trips,initial,Change to list->Change to light->Change to default
+2026-01-01T14:30:00,2026-01-01T14:30:00,http://158.42.185.67:5000/clip_creation-trips-19.mp4,UIAdaptation-v0,19,trips,initial,Change to grid5->Change to light->Change to dark->Change to big
+2026-01-01T14:45:00,2026-01-01T14:45:00,http://158.42.185.67:5000/clip_creation-trips-20.mp4,UIAdaptation-v0,20,trips,initial,Change to show->Change to partial->Change to medium->Change to dropdown
