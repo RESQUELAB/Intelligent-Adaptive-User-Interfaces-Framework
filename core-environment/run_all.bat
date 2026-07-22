@@ -50,22 +50,22 @@ set "CLIPS_URL=https://github.com/RESQUELAB/Intelligent-Adaptive-User-Interfaces
 echo.
 echo [4/6] Checking pre-trained clips...
 if not exist "%CLIPS_DIR%" mkdir "%CLIPS_DIR%"
-
-if not exist "%CLIPS_DIR%\UIAdaptation-v0-courses-1.clip" (
-    echo   Downloading pre-trained clips (~468MB)...
-    curl -L -o "%CLIPS_ZIP%" "%CLIPS_URL%"
-    if !errorlevel! neq 0 (
-        echo [ERROR] Failed to download clips
-        pause
-        exit /b
-    )
-    echo   Extracting clips...
-    powershell -Command "Expand-Archive -Path '%CLIPS_ZIP%' -DestinationPath '%CLIPS_DIR%' -Force"
-    del "%CLIPS_ZIP%"
-    echo   Done. 40 clips ready.
-) else (
-    echo   Pre-trained clips already present.
+if exist "%CLIPS_DIR%\UIAdaptation-v0-courses-1.clip" goto :clips_ok
+echo   Downloading pre-trained clips (~468MB^)...
+curl -L -o "%CLIPS_ZIP%" "%CLIPS_URL%"
+if %errorlevel% neq 0 (
+    echo [ERROR] Failed to download clips
+    pause
+    exit /b
 )
+echo   Extracting clips...
+powershell -Command "Expand-Archive -Path '%CLIPS_ZIP%' -DestinationPath '%CLIPS_DIR%' -Force"
+del "%CLIPS_ZIP%"
+echo   Done. 40 clips ready.
+goto :clips_done
+:clips_ok
+echo   Pre-trained clips already present.
+:clips_done
 
 REM --- 5. Copiar .env al Orchestrator ---
 copy /Y .env electron_app\.env
