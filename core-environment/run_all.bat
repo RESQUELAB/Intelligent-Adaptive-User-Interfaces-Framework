@@ -7,19 +7,19 @@ REM ============================================
 
 REM --- 1. Crear .env desde .env.example si no existe ---
 if not exist ".env" (
-    echo [1/6] Creating .env from .env.example...
+    echo [1/7] Creating .env from .env.example...
     copy /Y .env.example .env
 ) else (
-    echo [1/6] .env already exists
+    echo [1/7] .env already exists
 )
 
 REM --- 2. Auto-detectar IP y anadir VIDEO_SERVER_HOST ---
-echo [2/6] Detecting server IP...
+echo [2/7] Detecting server IP...
 call set_ip_env.bat
 
 REM --- 3. Descargar Orchestrator (Electron) ---
 echo.
-echo [3/6] Checking Orchestrator...
+echo [3/7] Checking Orchestrator...
 set "ZIP_PATH=.\orchestrator.zip"
 set "EXE_PATH=electron_app\adaptiveuiserver.exe"
 set "ORCH_URL=https://github.com/RESQUELAB/UIAdaptationManager/releases/download/adaptiveappserver-v1.0.0/orchestrator.zip"
@@ -48,7 +48,7 @@ set "CLIPS_ZIP=clips.zip"
 set "CLIPS_URL=https://github.com/RESQUELAB/Intelligent-Adaptive-User-Interfaces-Framework/releases/download/v1.0.0-clips/clips.zip"
 
 echo.
-echo [4/6] Checking pre-trained clips...
+echo [4/7] Checking pre-trained clips...
 if not exist "%CLIPS_DIR%" mkdir "%CLIPS_DIR%"
 if exist "%CLIPS_DIR%\UIAdaptation-v0-courses-1.clip" goto :clips_ok
 echo   Downloading pre-trained clips (~468MB^)...
@@ -67,12 +67,37 @@ goto :clips_done
 echo   Pre-trained clips already present.
 :clips_done
 
-REM --- 5. Copiar .env al Orchestrator ---
+REM --- 5. Descargar videos pre-generados ---
+set "VIDEOS_DIR=videos"
+set "VIDEOS_ZIP=clips_videos.zip"
+set "VIDEOS_URL=https://github.com/RESQUELAB/Intelligent-Adaptive-User-Interfaces-Framework/releases/download/v1.0.0-clips-videos/clips_videos.zip"
+
+echo.
+echo [5/7] Checking pre-generated videos...
+if not exist "%VIDEOS_DIR%" mkdir "%VIDEOS_DIR%"
+if exist "%VIDEOS_DIR%\clip_creation-courses-1.mp4" goto :videos_ok
+echo   Downloading pre-generated videos (~19MB^)...
+curl -L -o "%VIDEOS_ZIP%" "%VIDEOS_URL%"
+if %errorlevel% neq 0 (
+    echo [ERROR] Failed to download videos
+    pause
+    exit /b
+)
+echo   Extracting videos...
+powershell -Command "Expand-Archive -Path '%VIDEOS_ZIP%' -DestinationPath '%VIDEOS_DIR%' -Force"
+del "%VIDEOS_ZIP%"
+echo   Done. 40 videos ready.
+goto :videos_done
+:videos_ok
+echo   Pre-generated videos already present.
+:videos_done
+
+REM --- 6. Copiar .env al Orchestrator ---
 copy /Y .env electron_app\.env
 
-REM --- 6. Docker: build y levantar servicios ---
+REM --- 7. Docker: build y levantar servicios ---
 echo.
-echo [6/6] Building and starting Docker services...
+echo [7/7] Building and starting Docker services...
 echo Preparing Docker build folders...
 
 REM Django App

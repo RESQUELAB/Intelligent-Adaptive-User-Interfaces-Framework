@@ -64,3 +64,5 @@ Thumbs.db
 *.zip
 core-environment/electron_app/
 examples/client_app/
+# Pre-generated videos (downloaded from GitHub Releases)
+core-environment/videos/
