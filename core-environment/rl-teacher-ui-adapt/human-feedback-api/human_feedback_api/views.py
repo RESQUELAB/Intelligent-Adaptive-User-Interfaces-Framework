@@ -609,7 +609,6 @@ def trigger_training(user_id, environment):
         subprocess.Popen(cmd.split()) 
 
 
-@csrf_exempt
 def _is_training_running_for_user(user_id):
     try:
         result = subprocess.check_output(["ps", "-eo", "cmd", "--no-headers"], timeout=5).decode()
@@ -618,6 +617,7 @@ def _is_training_running_for_user(user_id):
         return False
 
 
+@csrf_exempt
 def check_agent_status(request):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method"}, status=405)
@@ -662,6 +662,7 @@ def check_agent_status(request):
 
 
 @login_required
+@csrf_exempt
 def restart_training(request):
     user = request.user
     domains = ['courses', 'trips']
