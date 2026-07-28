@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set ZIP_URL=https://github.com/RESQUELAB/Adaptive-app/releases/download/adaptive_app_v1.0.1/adaptiveapp-v1.0.1.zip
+set ZIP_URL=https://github.com/RESQUELAB/Adaptive-app/releases/download/adaptive_app_v1.0.2/adaptiveapp-v1.0.2.zip
 set ZIP_FILE=client_app.zip
 
 echo [1/3] Downloading Adaptive App client...
@@ -23,7 +23,7 @@ if %errorlevel% neq 0 (
     pause
     exit /b
 )
-ren adaptiveapp-v1.0.1 client_app
+ren adaptiveapp-v1.0.2 client_app
 del /f /q %ZIP_FILE%
 
 echo [2/3] Reading VIDEO_SERVER_HOST from .env...
