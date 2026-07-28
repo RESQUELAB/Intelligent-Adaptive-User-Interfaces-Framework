@@ -86,6 +86,10 @@
                     <a href="javascript:void(0)" onclick="checkStatus()">Refresh now</a>
                 </p>
             </div>
+            <div style="margin-top: 12px">
+                <button class="btn btn-primary btn-sm" onclick="checkAgent()">Check Agent Status</button>
+                <span id="agent-status-msg" style="margin-left: 10px; font-weight: bold;"></span>
+            </div>
         </div>
     </div>
 
@@ -130,6 +134,27 @@ function checkStatus() {
             }
         })
         .catch(function() {});
+}
+
+function checkAgent() {
+    var msg = document.getElementById('agent-status-msg');
+    msg.innerHTML = 'Checking...';
+    fetch('/api/check_agent_status/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: {{ user_id }}, experiment: 'cso' })
+    })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.agent_ready) {
+                msg.innerHTML = '<span class="label label-success">Agent READY — you can now log in from the client app</span>';
+            } else {
+                msg.innerHTML = '<span class="label label-danger">Agent not ready — ' + (data.details || 'unknown') + '</span>';
+            }
+        })
+        .catch(function() {
+            msg.innerHTML = '<span class="label label-danger">Error checking agent status</span>';
+        });
 }
 
 function restartTraining() {
