@@ -25,4 +25,6 @@ urlpatterns = [
     url(r'^logout/$', human_feedback_api.views.logout_user, name='logout'),
     url(r'^api/log_training_completion/$', human_feedback_api.views.log_training_completion, name='log_training_completion'),
     url(r'^api/check_agent_status/$', human_feedback_api.views.check_agent_status, name='check_agent_status'),
+    url(r'^api/training_status/$', human_feedback_api.views.training_status_api, name='training_status_api'),
+    url(r'^api/restart_training/$', human_feedback_api.views.restart_training, name='restart_training'),
     ]

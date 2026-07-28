@@ -46,5 +46,115 @@
                 </ul>
         </div>
     </div> <!-- row -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3><span class="glyphicon glyphicon-stats"></span> Training Status</h3>
+            <div class="well">
+                <table class="table table-condensed" style="margin-bottom: 0">
+                    <thead>
+                        <tr>
+                            <th>Domain</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="training-status-body">
+                        {% for key, info in training_status.items %}
+                        <tr id="status-row-{{ key }}">
+                            <td>{{ info.experiment }} / {{ info.domain }}</td>
+                            <td id="status-cell-{{ key }}">
+                                {% if info.status == "complete" %}
+                                    <span class="label label-success">Complete</span>
+                                {% elif info.status == "training" %}
+                                    <span class="label label-warning">{{ info.label }}</span>
+                                {% else %}
+                                    <span class="label label-default">Pending feedback</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id="restart-area" style="margin-top: 8px; display: none">
+                    <button class="btn btn-danger btn-sm" onclick="restartTraining()">Restart Training</button>
+                    <span class="text-muted" style="margin-left: 8px; font-size: 0.85em">
+                        Completed both domains but training is not running
+                    </span>
+                </div>
+                <p class="text-muted" style="margin-top: 10px; margin-bottom: 0; font-size: 0.85em">
+                    Auto-updates every 30s &middot;
+                    <a href="javascript:void(0)" onclick="checkStatus()">Refresh now</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script>
+function getLabel(info) {
+    if (info.status === "complete") return '<span class="label label-success">Complete</span>';
+    if (info.status === "training") return '<span class="label label-warning">' + info.label + '</span>';
+    return '<span class="label label-default">Pending feedback</span>';
+}
+
+function checkStatus() {
+    fetch('/api/training_status/')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var counts = { complete: 0, training: 0, pending: 0 };
+            for (var key in data) {
+                counts[data[key].status] = (counts[data[key].status] || 0) + 1;
+                var cell = document.getElementById('status-cell-' + key);
+                if (cell) {
+                    var newHtml = getLabel(data[key]);
+                    if (cell.innerHTML !== newHtml) {
+                        cell.innerHTML = newHtml;
+                    }
+                }
+            }
+            var hasPending = counts.pending > 0;
+            var hasTraining = counts.training > 0;
+            var allComplete = counts.complete > 0 && !hasPending && !hasTraining;
+            var allCompleteWithPending = counts.complete > 0 && hasPending;
+
+            var restartArea = document.getElementById('restart-area');
+            if (allCompleteWithPending) {
+                restartArea.style.display = 'block';
+            } else {
+                restartArea.style.display = 'none';
+            }
+
+            if (allComplete) {
+                clearInterval(window._statusTimer);
+            }
+        })
+        .catch(function() {});
+}
+
+function restartTraining() {
+    var btn = document.querySelector('#restart-area button');
+    btn.disabled = true;
+    btn.textContent = 'Restarting...';
+    fetch('/api/restart_training/', { method: 'POST' })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.message) {
+                btn.textContent = 'Restarted!';
+                setTimeout(function() { location.reload(); }, 1000);
+            } else {
+                alert(data.error || 'Unknown error');
+                btn.disabled = false;
+                btn.textContent = 'Restart Training';
+            }
+        })
+        .catch(function() {
+            alert('Failed to restart training');
+            btn.disabled = false;
+            btn.textContent = 'Restart Training';
+        });
+}
+
+window._statusTimer = setInterval(checkStatus, 30000);
+</script>
 {% endblock %}

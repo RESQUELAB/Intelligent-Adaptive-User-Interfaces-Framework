@@ -52,7 +52,7 @@ def user_login(request):
             try:
 
                 print("EXPERIMENT_NAME:")
-                experimentName = request.GET.get("experimentName", "default")
+                experimentName = request.GET.get("experimentName", "cso")
                 courses_process = subprocess.Popen(
                     [
                         'python', 'rl_teacher/launch_clip_manager.py',
@@ -134,29 +134,116 @@ def _all_comparisons(experiment_name, domain, user, use_locking=False):
     # Sort by priority, then put newest labels first
     return comparisons.order_by('-priority', '-created_at')
 
-@login_required
-def index(request):
-    # Fetch all distinct binary tree experiments with their domain from SortTree
-    binary_tree_experiments = set(
-        (tree.experiment_name, tree.domain) for tree in SortTree.objects.filter(user=request.user, parent=None)
-    )
+def _no_cache(response):
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
 
-    # Fetch all comparison experiments and their related domains through the SortTree
+
+def _get_experiments(user):
+    binary_tree_experiments = set(
+        (tree.experiment_name, tree.domain) for tree in SortTree.objects.filter(user=user, parent=None)
+    )
     all_comparison_experiments = [
-        (comparison.experiment_name, comparison.tree_node.domain) 
-        for comparison in Comparison.objects.select_related('tree_node').filter(tree_node__user=request.user)
+        (comparison.experiment_name, comparison.tree_node.domain)
+        for comparison in Comparison.objects.select_related('tree_node').filter(tree_node__user=user)
         if comparison.tree_node
     ]
-
-    # Get other experiments that are in comparisons but not in binary trees
     other_experiments = set(all_comparison_experiments) - binary_tree_experiments
+    return binary_tree_experiments, other_experiments
 
-    # Render the experiments and domains in the context
-    return render(request, 'index.html', context={
+
+def get_training_status(user):
+    """Check training status for all experiments and domains of a user."""
+    domains = ['courses', 'trips']
+    experiments = TrainingCompletion.objects.filter(user=user).values_list('experiment', flat=True).distinct()
+    if not experiments:
+        experiments = ['cso']
+
+    training_status = {}
+    for exp in experiments:
+        completions = TrainingCompletion.objects.filter(user=user, experiment=exp)
+        completed_domains = [c.domain for c in completions]
+
+        ready_domains = []
+        for d in domains:
+            flag_path = "/app/checkpoints/agent/%s/%s/%s/.ready" % (exp, user.id, d)
+            if os.path.exists(flag_path):
+                ready_domains.append(d)
+
+        for d in domains:
+            key = "%s/%s" % (exp, d)
+            if d in ready_domains:
+                training_status[key] = {"status": "complete", "progress": 100, "label": "Complete", "experiment": exp, "domain": d}
+            elif d in completed_domains:
+                elapsed = _get_training_elapsed(exp, d)
+                progress = _estimate_training_progress(exp, d, user)
+                label = "Training %d%%" % progress if elapsed else "Training in progress..."
+                training_status[key] = {"status": "training", "progress": progress, "label": label, "elapsed": elapsed, "experiment": exp, "domain": d}
+            else:
+                training_status[key] = {"status": "pending", "progress": 0, "label": "Pending feedback", "experiment": exp, "domain": d}
+
+    return training_status
+
+
+def _get_training_elapsed(experiment, domain):
+    """Get elapsed time in minutes for a training process by experiment and domain."""
+    import subprocess
+    try:
+        result = subprocess.check_output(
+            ["ps", "-eo", "pid,etimes,cmd", "--no-headers"],
+            timeout=5
+        ).decode()
+        for line in result.split("\n"):
+            if "teach.py" in line and "-d %s" % domain in line and "-n %s" % experiment in line:
+                parts = line.strip().split()
+                if len(parts) >= 2:
+                    etimes = int(parts[1])
+                    return etimes // 60
+    except Exception:
+        pass
+    return None
+
+
+def _estimate_training_progress(experiment, domain, user):
+    try:
+        rm_path = "/app/checkpoints/reward_model/%s/%s/%s/checkpoint" % (experiment, user.id, domain)
+        if os.path.exists(rm_path):
+            agent_path = "/app/checkpoints/agent/%s/%s/%s/checkpoint" % (experiment, user.id, domain)
+            if os.path.exists(agent_path):
+                with open(agent_path) as f:
+                    content = f.read()
+                import re
+                match = re.search(r'model_checkpoint_path: "(\d+)"', content)
+                if match:
+                    episode = int(match.group(1))
+                    total = 100000
+                    return min(99, int(episode * 100 / total))
+    except Exception:
+        pass
+    elapsed = _get_training_elapsed(experiment, domain)
+    if elapsed is not None and elapsed > 0:
+        return min(99, int(elapsed * 100 / 120))
+    return 0
+
+
+@login_required
+def index(request):
+    binary_tree_experiments, other_experiments = _get_experiments(request.user)
+    response = _no_cache(render(request, 'index.html', context={
         'binary_tree_experiments': binary_tree_experiments,
         'other_experiments': other_experiments,
-        'username': request.user.username 
-    })
+        'username': request.user.username,
+        'training_status': get_training_status(request.user),
+    }))
+    return response
+
+
+@login_required
+def training_status_api(request):
+    status = get_training_status(request.user)
+    return _no_cache(JsonResponse(status))
 
 
 def list_comparisons(request, experiment_name):
@@ -523,6 +610,14 @@ def trigger_training(user_id, environment):
 
 
 @csrf_exempt
+def _is_training_running_for_user(user_id):
+    try:
+        result = subprocess.check_output(["ps", "-eo", "cmd", "--no-headers"], timeout=5).decode()
+        return any("teach.py" in line and "-u %s" % user_id in line for line in result.split("\n"))
+    except Exception:
+        return False
+
+
 def check_agent_status(request):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method"}, status=405)
@@ -548,10 +643,39 @@ def check_agent_status(request):
             os.path.exists(ready_trips_flag)
         )
 
-        return JsonResponse({
+        response_data = {
             "agent_ready": agent_ready,
             "details": "Checkpoints and ready flag found" if agent_ready else "Missing checkpoints or flag"
-        })
+        }
+
+        if not agent_ready:
+            training_running = _is_training_running_for_user(user_id)
+            completed = TrainingCompletion.objects.filter(user_id=user_id, experiment=experiment).count()
+            if completed >= 2 and not training_running:
+                trigger_training(user_id, "UIAdaptation-v0")
+                response_data["training_auto_restarted"] = True
+
+        return JsonResponse(response_data)
 
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+
+@login_required
+def restart_training(request):
+    user = request.user
+    domains = ['courses', 'trips']
+    exp = 'cso'
+
+    completed = TrainingCompletion.objects.filter(user=user, experiment=exp).count()
+    if completed < 2:
+        return JsonResponse({"error": "Complete comparisons for both domains first"}, status=400)
+
+    import subprocess
+    result = subprocess.check_output(["ps", "-eo", "cmd", "--no-headers"], timeout=5).decode()
+    is_running = any("teach.py" in line and "-u %s" % user.id in line for line in result.split("\n"))
+    if is_running:
+        return JsonResponse({"error": "Training is already running"}, status=400)
+
+    trigger_training(user.id, "UIAdaptation-v0")
+    return JsonResponse({"message": "Training restarted"})
