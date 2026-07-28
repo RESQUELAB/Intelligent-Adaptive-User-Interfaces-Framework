@@ -179,7 +179,17 @@ def get_training_status(user):
             elif d in completed_domains:
                 elapsed = _get_training_elapsed(exp, d)
                 progress = _estimate_training_progress(exp, d, user)
-                label = "Training %d%%" % progress if elapsed else "Training in progress..."
+                phase = _training_phase(exp, d, user)
+                if phase["phase"] == "agent":
+                    pct = int(phase["episode"] * 100 / phase["total"])
+                    label = "Agent: %s / %s episodes (%d%%)" % (phase["episode"], phase["total"], pct)
+                elif phase["phase"] == "reward_model_done":
+                    label = "Reward model: done, starting agent..."
+                elif phase["phase"] == "reward_model":
+                    pct = "%d%%" % progress if elapsed else "starting..."
+                    label = "Reward model: training %s" % pct
+                else:
+                    label = "Training %d%%" % progress if elapsed else "Training in progress..."
                 training_status[key] = {"status": "training", "progress": progress, "label": label, "elapsed": elapsed, "experiment": exp, "domain": d}
             else:
                 training_status[key] = {"status": "pending", "progress": 0, "label": "Pending feedback", "experiment": exp, "domain": d}
@@ -226,6 +236,34 @@ def _estimate_training_progress(experiment, domain, user):
     if elapsed is not None and elapsed > 0:
         return min(99, int(elapsed * 100 / 120))
     return 0
+
+
+def _training_phase(experiment, domain, user):
+    """Return a dict with phase info: phase name, episode count, total."""
+    rm_path = "/app/checkpoints/reward_model/%s/%s/%s/checkpoint" % (experiment, user.id, domain)
+    agent_path = "/app/checkpoints/agent/%s/%s/%s/checkpoint" % (experiment, user.id, domain)
+    ready_path = "/app/checkpoints/agent/%s/%s/%s/.ready" % (experiment, user.id, domain)
+
+    if os.path.exists(ready_path):
+        return {"phase": "complete"}
+
+    if os.path.exists(agent_path):
+        try:
+            with open(agent_path) as f:
+                content = f.read()
+            import re
+            match = re.search(r'model_checkpoint_path: "(\d+)"', content)
+            if match:
+                episode = int(match.group(1))
+                return {"phase": "agent", "episode": episode, "total": 100000}
+        except Exception:
+            pass
+        return {"phase": "agent", "episode": 0, "total": 100000}
+
+    if os.path.exists(rm_path):
+        return {"phase": "reward_model_done"}
+
+    return {"phase": "reward_model"}
 
 
 @login_required
