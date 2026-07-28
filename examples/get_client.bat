@@ -17,7 +17,7 @@ if exist client_app (
     rmdir /s /q client_app
 )
 echo Extracting...
-powershell -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath . -Force"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath . -Force"
 if %errorlevel% neq 0 (
     echo [ERROR] Failed to extract %ZIP_FILE%
     pause

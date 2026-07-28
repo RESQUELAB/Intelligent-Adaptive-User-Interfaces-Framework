@@ -35,7 +35,7 @@ if not exist "%EXE_PATH%" (
         exit /b
     )
     echo   Extracting...
-    powershell -Command "Expand-Archive -Path '%ZIP_PATH%' -DestinationPath '.' -Force"
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -Path '%ZIP_PATH%' -DestinationPath '.' -Force"
     del "%ZIP_PATH%"
     echo   Done.
 ) else (
@@ -59,7 +59,7 @@ if %errorlevel% neq 0 (
     exit /b
 )
 echo   Extracting clips...
-powershell -Command "Expand-Archive -Path '%CLIPS_ZIP%' -DestinationPath '%CLIPS_DIR%' -Force"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -Path '%CLIPS_ZIP%' -DestinationPath '%CLIPS_DIR%' -Force"
 del "%CLIPS_ZIP%"
 echo   Done. 40 clips ready.
 goto :clips_done
@@ -84,7 +84,7 @@ if %errorlevel% neq 0 (
     exit /b
 )
 echo   Extracting videos...
-powershell -Command "Expand-Archive -Path '%VIDEOS_ZIP%' -DestinationPath '%VIDEOS_DIR%' -Force"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -Path '%VIDEOS_ZIP%' -DestinationPath '%VIDEOS_DIR%' -Force"
 del "%VIDEOS_ZIP%"
 echo   Done. 40 videos ready.
 goto :videos_done
