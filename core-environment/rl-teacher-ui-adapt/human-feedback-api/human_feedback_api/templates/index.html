@@ -81,14 +81,13 @@
                         Completed both domains but training is not running
                     </span>
                 </div>
+                <div id="complete-area" class="alert alert-success" style="margin-top: 10px; display: none">
+                    <strong>Training complete!</strong> You can close this window and log in again from the Adaptive App.
+                </div>
                 <p class="text-muted" style="margin-top: 10px; margin-bottom: 0; font-size: 0.85em">
                     Auto-updates every 30s &middot;
                     <a href="javascript:void(0)" onclick="checkStatus()">Refresh now</a>
                 </p>
-            </div>
-            <div style="margin-top: 12px">
-                <button class="btn btn-primary btn-sm" onclick="checkAgent()">Check Agent Status</button>
-                <span id="agent-status-msg" style="margin-left: 10px; font-weight: bold;"></span>
             </div>
         </div>
     </div>
@@ -129,32 +128,15 @@ function checkStatus() {
                 restartArea.style.display = 'none';
             }
 
+            var completeArea = document.getElementById('complete-area');
             if (allComplete) {
+                completeArea.style.display = 'block';
                 clearInterval(window._statusTimer);
+            } else {
+                completeArea.style.display = 'none';
             }
         })
         .catch(function() {});
-}
-
-function checkAgent() {
-    var msg = document.getElementById('agent-status-msg');
-    msg.innerHTML = 'Checking...';
-    fetch('/api/check_agent_status/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: {{ user_id }}, experiment: 'cso' })
-    })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            if (data.agent_ready) {
-                msg.innerHTML = '<span class="label label-success">Agent READY — you can now log in from the client app</span>';
-            } else {
-                msg.innerHTML = '<span class="label label-danger">Agent not ready — ' + (data.details || 'unknown') + '</span>';
-            }
-        })
-        .catch(function() {
-            msg.innerHTML = '<span class="label label-danger">Error checking agent status</span>';
-        });
 }
 
 function restartTraining() {
