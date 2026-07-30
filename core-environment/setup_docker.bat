@@ -40,19 +40,17 @@ echo.
 echo   Si ya estaba instalado, verifica con: wsl -l -v
 
 REM --- 4. Instalar Docker Desktop ---
-echo [4/4] Downloading Docker Desktop...
-set "DOCKER_INSTALLER=%TEMP%\Docker Desktop Installer.exe"
-curl -L -o "%DOCKER_INSTALLER%" "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe"
+echo [4/4] Installing Docker Desktop via winget...
+echo   Esto descargara e instalara Docker Desktop automaticamente.
+echo   Puede tardar varios minutos.
+echo.
+winget install --id Docker.DockerDesktop --accept-source-agreements --accept-package-agreements
 if %errorlevel% neq 0 (
-    echo [ERROR] No se pudo descargar Docker Desktop.
-    echo   Descargar manualmente de: https://docs.docker.com/desktop/setup/install/windows-install/
+    echo [ERROR] La instalacion fallo.
+    echo   Instalar manualmente desde: https://docs.docker.com/desktop/setup/install/windows-install/
     pause
     exit /b
 )
-
-echo   Installing Docker Desktop (esto puede tardar varios minutos)...
-start /wait "" "%DOCKER_INSTALLER%" install --accept-license --backend=wsl-2
-del "%DOCKER_INSTALLER%"
 
 echo.
 echo ============================================
