@@ -273,7 +273,6 @@ def index(request):
         'binary_tree_experiments': binary_tree_experiments,
         'other_experiments': other_experiments,
         'username': request.user.username,
-        'user_id': request.user.id,
         'training_status': get_training_status(request.user),
     }))
     return response
