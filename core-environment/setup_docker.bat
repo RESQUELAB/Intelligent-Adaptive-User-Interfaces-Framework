@@ -20,25 +20,24 @@ echo.
 
 REM --- 1. Activar WSL2 ---
 echo [1/4] Enabling WSL2...
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart >nul 2>&1
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart >nul 2>&1
-echo   Done.
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+echo   Done (puede requerir reinicio).
 
-REM --- 2. Instalar kernel de WSL2 ---
-echo [2/4] Installing WSL2 kernel...
-wsl --set-default-version 2 >nul 2>&1
-echo   Done (si falla, descargar manualmente:
-echo   https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi)
+REM --- 2. Configurar WSL2 por defecto ---
+echo [2/4] Setting WSL2 as default...
+wsl --set-default-version 2
+echo.
 
 REM --- 3. Instalar Ubuntu ---
 echo [3/4] Installing Ubuntu...
-wsl --install -d Ubuntu >nul 2>&1
-if %errorlevel% neq 0 (
-    echo   Ubuntu ya instalado o con errores. Verificar con: wsl -l -v
-) else (
-    echo   Done. Al finalizar la instalacion se abrira una consola de Ubuntu.
-    echo   Complete el usuario/contraseña de Linux cuando se le solicite.
-)
+echo   Esto descarga Ubuntu desde Microsoft Store. Puede tardar varios minutos.
+echo   Al finalizar, se ABRIRA UNA VENTANA DE UBUNTU para que crees
+echo   un usuario y contrasena de Linux. COMPLETA ESE PASO antes de continuar.
+echo.
+wsl --install -d Ubuntu
+echo.
+echo   Si ya estaba instalado, verifica con: wsl -l -v
 
 REM --- 4. Instalar Docker Desktop ---
 echo [4/4] Downloading Docker Desktop...
