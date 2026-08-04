@@ -24,52 +24,63 @@ To address the need for clear separation between the reusable tool and sample im
 
 ## Prerequisites
 
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-- (Windows) [Python 3.x](https://www.python.org/) for helper scripts
+- **Docker / Docker Desktop** (with Docker Compose; on Windows this also requires WSL2)
+- **Python 3.x** for helper scripts
+
+On a clean Windows machine, run `core-environment/setup_docker.bat` to automatically install Docker Desktop, WSL2, and Ubuntu.
+
+---
+
+## Demonstration Video
+
+A video showing the installation steps and the full workflow (session start, comparison videos, "Experiments" list population, and automated agent training progress in the RL Teacher interface) is available at:
+
+[https://drive.google.com/drive/folders/1O6zyvvOrLdvXQu2KHrQNAbxg2SQWHul4?usp=sharing](https://drive.google.com/drive/folders/1O6zyvvOrLdvXQu2KHrQNAbxg2SQWHul4?usp=sharing)
 
 ---
 
 ## Getting Started
 
-### 1. Configure Environment
-
-Copy the example environment file and edit as needed:
-
-```sh
-cd core-environment
-cp .env.example .env
-# Edit .env with your settings (DB credentials, email, etc.)
-```
-
-### 2. Launch All Services
-
-On Windows, use the provided batch script:
+### 1. Launch All Services (Docker + Orchestrator)
 
 ```sh
 cd core-environment
 run_all.bat
 ```
 
-This will:
-- Set up environment variables
-- Copy `.env` to the Orchestrator (Electron app)
-- Build and start all Docker containers (`django_app`, RL servers, video server, DB)
-- Launch the Electron desktop app
+This script automatically:
+- Creates `.env` from `.env.example` and detects your server IP
+- Downloads the Orchestrator (Electron app)
+- Downloads the pre-trained clips (~468 MB) and pre-generated comparison videos (~19 MB) from the release assets
+- Builds and starts all Docker containers (`django_app`, RL servers, video server, DB)
+- Applies database migrations on first startup
+- Launches the Electron desktop app
 
-Alternatively, you can run the services manually:
+### 2. Install the Client App
+
+In a **second terminal**:
 
 ```sh
-cd src
-docker-compose build
-docker-compose up -d
-# Then start the Electron app manually from electron_app/
+cd examples
+get_client.bat
 ```
 
-### 3. Access the System
+This downloads the client from release `adaptive_app_v1.0.2`, extracts it into `client_app`, and writes the detected server IP into `client_app/resources/app/config.json` automatically.
+
+### 3. Run an Experiment
+
+1. Open the `adaptiveapp.exe` inside `examples/client_app`.
+2. Register a new user account and log in.
+3. On the selection screen, click the first card to start your session. This launches the comparison videos and creates your experiment trees.
+4. Open the **RL Teacher** interface at [http://localhost:8000](http://localhost:8000), log in with the same account, and your experiments will now appear under **Experiments**.
+5. Answer the comparison questions; once enough feedback is gathered, the agent training starts automatically.
+
+> Note: the "Experiments" list is populated once a session is started (comparison trees are created on first login from the client). A freshly registered account with no session started shows an empty list.
+
+### 4. Access the System
 
 - **Orchestrator App**: The desktop client will launch automatically (or run `core-environment/electron_app/adaptiveuiserver.exe`).
-- **Django Backend**: Accessible at [http://localhost:8000](http://localhost:8000)
+- **Django Backend / RL Teacher**: Accessible at [http://localhost:8000](http://localhost:8000)
 - **Video Server**: Accessible at [http://localhost:5000](http://localhost:5000)
 - **RL Teacher Servers**: Exposed on ports 9998 and 9997.
 
@@ -145,12 +156,11 @@ Example configuration:
 ## Client-Side Example (Testing)
 
 A ready-to-use Windows client binary is available for demonstration and quick testing.  
-Download the latest release from [Adaptive-app v1.0.1](https://github.com/RESQUELAB/Adaptive-app/releases/tag/adaptive_app_v1.0.1).
+Download the latest release from [Adaptive-app v1.0.2](https://github.com/RESQUELAB/Adaptive-app/releases/tag/adaptive_app_v1.0.2).
 
-A batch file is included at `examples/get_client.bat` to automatically download and extract the client into a `client_app` folder.  
-**Before running the app, configure the SERVER address in `client_app/resources/app/config.json`.**
+A batch file is included at `examples/get_client.bat` to automatically download, extract, and configure the client into a `client_app` folder (the server IP is written into `client_app/resources/app/config.json` automatically during setup).
 
-+ `config.json` example:
+If you need to change the server address manually, edit `config.json`:
 
 ```json
 {
